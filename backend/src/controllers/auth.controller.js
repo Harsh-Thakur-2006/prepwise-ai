@@ -140,6 +140,11 @@ export async function loginUserController(req, res) {
   }
 }
 
+/**
+ * @name logoutUserController
+ * @description Logout user by clearing token from user cookie and adding it to blacklist
+ * @access Public
+ */
 export async function logoutUserController(req, res) {
   try {
     const token = req.cookies.token;
@@ -165,6 +170,11 @@ export async function logoutUserController(req, res) {
   }
 }
 
+/**
+ * @name getMeController
+ * @description Get the current logged in user details
+ * @access Private
+ */
 export async function getMeController(req, res) {
   try {
     const user = await User.findById(req.user.id);
