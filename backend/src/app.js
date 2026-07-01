@@ -4,6 +4,7 @@ import cors from "cors";
 
 // import all the routes
 import authRouter from "./routes/auth.routes.js";
+import interviewRouter from "./routes/interview.routes.js";
 
 const app = express();
 
@@ -25,5 +26,6 @@ app.get("/health", (req, res) => {
 
 // using all the routes
 app.use("/api/auth", authRouter);
+app.use("/api/interview", interviewRouter);
 
 export default app;
