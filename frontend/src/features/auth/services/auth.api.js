@@ -45,9 +45,13 @@ export async function logout() {
 export async function getMe() {
   try {
     const res = await api.get("/api/auth/get-me");
-
     return res.data;
   } catch (error) {
+    if (error.response?.status === 401) {
+      // User is simply not logged in
+      return null;
+    }
     console.error("Error in getting user", error);
+    throw error;
   }
 }
