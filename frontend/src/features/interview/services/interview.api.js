@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
@@ -51,6 +51,23 @@ export async function getInterviewReportById(interviewId) {
 export async function getAllInterviewReports() {
   try {
     const res = await api.get("/api/interview/");
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+/**
+ * @description Service to generate resume pdf based on self description, resume content and job description
+ */
+export async function generateResumePdf({ interviewReportId }) {
+  try {
+    const res = await api.post(
+      `/api/interview/resume/pdf/${interviewReportId}`,
+      null,
+      { responseType: "blob" },
+    );
     return res.data;
   } catch (error) {
     console.error(error);

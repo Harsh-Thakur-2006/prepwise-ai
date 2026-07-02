@@ -1,5 +1,8 @@
 import { PDFParse } from "pdf-parse";
-import { generateInterviewReport } from "../services/ai.service.js";
+import {
+  generateInterviewReport,
+  generateResumePdf,
+} from "../services/ai.service.js";
 import { InterviewReport } from "../models/interviewReport.model.js";
 
 /**
@@ -10,6 +13,20 @@ import { InterviewReport } from "../models/interviewReport.model.js";
 export async function generateInterviewReportController(req, res) {
   const { selfDescription, jobDescription } = req.body;
   const resumeFile = req.file;
+
+  if (!jobDescription?.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: "Job description is required",
+    });
+  }
+
+  if (!resumeFile && !selfDescription?.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: "Resume or self description is required",
+    });
+  }
 
   let resumeFileContent = "";
 
@@ -100,6 +117,48 @@ export async function getAllInterviewReportsController(req, res) {
     return res.status(500).json({
       success: false,
       message: "Error while getting interview reports",
+    });
+  }
+}
+
+/**
+ * @name generateResumePdfController
+ * @description Controller to generate resume PDF bases on user self description, resume and job description
+ * @access private
+ */
+export async function generateResumePdfController(req, res) {
+  try {
+    const { interviewReportId } = req.params;
+
+    const interviewReport = await InterviewReport.findOne({
+      _id: interviewReportId,
+      user: req.user.id,
+    });
+
+    if (!interviewReport) {
+      return res.status(404).json({
+        success: false,
+        message: "Interview report not found",
+      });
+    }
+
+    const { resume, jobDescription, selfDescription } = interviewReport;
+
+    const pdfBuffer = await generateResumePdf({
+      resume,
+      jobDescription,
+      selfDescription,
+    });
+
+    res.contentType("application/pdf");
+    res.attachment(`resume_${interviewReportId}.pdf`);
+
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.log("Error in generating resume pdf", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in generating resume pdf",
     });
   }
 }
