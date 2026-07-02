@@ -53,7 +53,12 @@ export async function registerController(req, res) {
     );
 
     // set the token in cookie
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true, // Required for HTTPS
+      sameSite: "none", // Required for cross-site cookies
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
 
     res.status(201).json({
       success: true,
@@ -120,7 +125,12 @@ export async function loginUserController(req, res) {
     );
 
     // set the token in cookie
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true, // Required for HTTPS
+      sameSite: "none", // Required for cross-site cookies
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
 
     res.status(200).json({
       success: true,
@@ -155,7 +165,11 @@ export async function logoutUserController(req, res) {
       });
     }
 
-    res.clearCookie("token");
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
 
     res.status(200).json({
       success: true,
