@@ -48,7 +48,7 @@ export async function getMe() {
     return res.data;
   } catch (error) {
     if (error.response?.status === 401) {
-      // User is simply not logged in
+      console.error("User not logged in", error);
       return null;
     }
     console.error("Error in getting user", error);

@@ -157,15 +157,24 @@ Job Description: ${jobDescription}`;
 }
 
 async function generatePdfFromHtml(htmlContent) {
+  const executablePath = await puppeteer.executablePath();
+
+  console.log("Chrome executable path:", executablePath);
+
   const browser = await puppeteer.launch({
+    executablePath,
     headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+    ],
   });
-  console.log(await puppeteer.executablePath());
+
   const page = await browser.newPage();
 
   await page.setContent(htmlContent, {
-    waitUntil: "networkidle2",
+    waitUntil: "domcontentloaded",
   });
 
   const pdfBuffer = await page.pdf({
