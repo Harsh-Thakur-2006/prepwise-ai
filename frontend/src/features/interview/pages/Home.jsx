@@ -165,7 +165,7 @@ function Home() {
                       Click to upload or drag & drop
                     </p>
 
-                    <p className="dropzone__subtitle">PDF or DOCX (Max 5MB)</p>
+                    <p className="dropzone__subtitle">PDF (Max 5MB)</p>
                   </>
                 )}
                 <input
@@ -174,7 +174,7 @@ function Home() {
                   type="file"
                   id="resume"
                   name="resume"
-                  accept=".pdf,.docx"
+                  accept=".pdf"
                   onChange={(e) => {
                     const file = e.target.files[0];
 
